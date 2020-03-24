@@ -1,0 +1,25 @@
+.new {
+  font-weight: bold;
+
+  &.cases {
+    background-color: #fbe27f;
+  }
+
+  &.deaths {
+    color: #fff;
+    background-color: #ea2222;
+  }
+}
+
+.dataTables_scrollHead {
+  position: sticky !important;
+  backdrop-filter: blur(20px);
+  z-index: 999;
+  top: 0 !important;
+}
+
+tbody tr th {
+  position: sticky !important;
+  backdrop-filter: blur(20px);
+  left: 0 !important;
+}

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, user-scalable=no"
+    />
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+    />
+    <script
+      type="text/javascript"
+      src="https://code.jquery.com/jquery-3.4.1.min.js"
+    ></script>
+    <script
+      type="text/javascript"
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+    ></script>
+    <script
+      type="text/javascript"
+      src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+    ></script>
+
+    <!-- DataTable -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css"
+    />
+    <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js"></script>
+    <!-- Main -->
+    <link rel="stylesheet" href="assets/main.css" />
+    <title>Corona Live Stats</title>
+  </head>
+  <body class="container-fluid">
+    <div class="h3 label-counter" id="page-top">
+      COVID-19 Coronavirus Pandemic
+    </div>
+    <small class="badge badge-info">Real-time statistics</small>
+		<div></div>
+    <small id="last-updated" class="text-muted"></small>
+    <hr />
+    <div class="row">
+      <div class="col-12">
+        <table
+          id="main_table_countries_today"
+          class="table table-bordered table-striped table-hover main_table_countries"
+        >
+          <thead>
+            <tr>
+              <th>Country, Other</th>
+              <th class="sorting_desc">Total Cases</th>
+              <th>New Cases</th>
+              <th>Total Deaths</th>
+              <th>New Deaths</th>
+              <th>Total Recovered</th>
+              <th>Active Cases</th>
+              <th>Serious, Critical</th>
+              <th>Cases/1M pop</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <!-- AJAX Data -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <script>
+      $(document).ready(function() {
+        const url =
+          "https://coronavirus-monitor.p.rapidapi.com/coronavirus/cases_by_country.php";
+        // Requesting the api
+        $.ajax({
+          url: url,
+          type: "GET",
+          beforeSend: function(xhr) {
+            xhr.setRequestHeader(
+              "x-rapidapi-key",
+              "bbfcbcba07msh67e8ad681aab5dep1e5f13jsna9be297f9366"
+            );
+          }
+        }).done(function(response) {
+          const data = JSON.parse(response);
+          const stats = data.countries_stat;
+          const lastUpdatedAt = data.statistic_taken_at;
+          var tr = "";
+          // var tr = stats.map(stat => stat.country_name);
+          tr += stats.map(
+            stat =>
+              `<tr>
+									<th> ${stat.country_name}</th>
+									<td>${stat.cases} </td>
+									<td class="new cases">+${stat.new_cases}</td>
+									<td>${stat.deaths}</td>
+									<td class="new deaths">+${stat.new_deaths}</td>
+									<td>${stat.total_recovered}</td>
+									<td>${stat.active_cases}</td>
+									<td>${stat.serious_critical}</td>
+									<td>${stat.total_cases_per_1m_population}</td>
+								</tr>`
+          );
+          // console.log(tr);
+          // Set stats
+          $("tbody").html(tr);
+          $("#last-updated").text("Last updated: " + new Date(lastUpdatedAt));
+
+          $("#main_table_countries_today").DataTable({
+            scrollCollapse: true,
+            scrollX: true,
+            order: [[1, "desc"]],
+            paging: false
+          });
+        });
+      });
+    </script>
+  </body>
+</html>

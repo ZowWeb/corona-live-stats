@@ -1,0 +1,30 @@
+.new {
+  font-weight: bold;
+}
+
+.new.cases {
+  background-color: #fbe27f;
+}
+
+.new.deaths {
+  color: #fff;
+  background-color: #ea2222;
+}
+
+.dataTables_scrollHead {
+  position: -webkit-sticky !important;
+  position: sticky !important;
+  -webkit-backdrop-filter: blur(20px);
+          backdrop-filter: blur(20px);
+  z-index: 999;
+  top: 0 !important;
+}
+
+tbody tr th {
+  position: -webkit-sticky !important;
+  position: sticky !important;
+  -webkit-backdrop-filter: blur(20px);
+          backdrop-filter: blur(20px);
+  left: 0 !important;
+}
+/*# sourceMappingURL=main.css.map */
