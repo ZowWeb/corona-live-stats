@@ -106,7 +106,7 @@
           // console.log(tr);
           // Set stats
           $("tbody").html(tr);
-          $("#last-updated").text("Last updated: " + new Date(lastUpdatedAt));
+          $("#last-updated").text("Last updated: " + (new Date(lastUpdatedAt)).toUTCString());
 
           $("#main_table_countries_today").DataTable({
             scrollCollapse: true,
