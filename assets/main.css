@@ -11,6 +11,25 @@
   background-color: #ea2222;
 }
 
+.loader {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  z-index: 99999;
+  background: rgba(0, 0, 0, 0.2);
+}
+
 .dataTables_scrollHead {
   position: -webkit-sticky !important;
   position: sticky !important;
