@@ -35,12 +35,48 @@
     <title>Corona Live Stats</title>
   </head>
   <body class="container-fluid">
+    <div class="loader text-center" style="display:none">
+      <img src="assets/loader.gif" />
+    </div>
     <div class="h3 label-counter" id="page-top">
       COVID-19 Coronavirus Pandemic
     </div>
     <small class="badge badge-info">Real-time statistics</small>
-		<div></div>
+    <div></div>
     <small id="last-updated" class="text-muted"></small>
+    <hr />
+    <div class="row total">
+      <div class="col-12 col-md-4">
+        <div class="card border-dark mb-3">
+          <div class="card-header">
+            Total Cases
+          </div>
+          <div class="card-body">
+            <div class="display-3 cases">312,123</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-12 col-md-4">
+        <div class="card border-danger mb-3">
+          <div class="card-header">
+            Total Deaths
+          </div>
+          <div class="card-body text-danger">
+            <div class="display-3 deaths">19,606</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-12 col-md-4">
+        <div class="card border-success mb-3">
+          <div class="card-header">
+            Total Recovered
+          </div>
+          <div class="card-body text-success">
+            <div class="display-3 recovered">111,854</div>
+          </div>
+        </div>
+      </div>
+    </div>
     <hr />
     <div class="row">
       <div class="col-12">
@@ -71,25 +107,34 @@
 
     <script>
       $(document).ready(function() {
-        const url =
-          "https://coronavirus-monitor.p.rapidapi.com/coronavirus/cases_by_country.php";
-        // Requesting the api
-        $.ajax({
-          url: url,
-          type: "GET",
-          beforeSend: function(xhr) {
-            xhr.setRequestHeader(
-              "x-rapidapi-key",
+        $.ajaxSetup({
+          url: "https://coronavirus-monitor.p.rapidapi.com/coronavirus",
+          headers: {
+            "x-rapidapi-key":
               "bbfcbcba07msh67e8ad681aab5dep1e5f13jsna9be297f9366"
-            );
           }
-        }).done(function(response) {
-          const data = JSON.parse(response);
-          const stats = data.countries_stat;
+        });
+        $.when(
+          // Get total stats
+          $.get(
+            "https://coronavirus-monitor.p.rapidapi.com/coronavirus/worldstat.php"
+          ),
+
+          // Get stats by country
+          $.get(
+            "https://coronavirus-monitor.p.rapidapi.com/coronavirus/cases_by_country.php"
+          )
+        ).then(function(totalStats, byCountry) {
+          console.log(totalStats[0], byCountry);
+          $(".loader").hide();
+          // Extract data
+          const data = JSON.parse(byCountry[0]);
+          const total = JSON.parse(totalStats[0]);
+          const statsByCountry = data.countries_stat;
           const lastUpdatedAt = data.statistic_taken_at;
           var tr = "";
           // var tr = stats.map(stat => stat.country_name);
-          tr += stats.map(
+          tr += statsByCountry.map(
             stat =>
               `<tr>
 									<th> ${stat.country_name}</th>
@@ -106,7 +151,12 @@
           // console.log(tr);
           // Set stats
           $("tbody").html(tr);
-          $("#last-updated").text("Last updated: " + (new Date(lastUpdatedAt)).toUTCString());
+          $(".total .cases").text(total.total_cases);
+          $(".total .deaths").text(total.total_deaths);
+          $(".total .recovered").text(total.total_recovered);
+          $("#last-updated").text(
+            "Last updated: " + new Date(lastUpdatedAt).toUTCString()
+          );
 
           $("#main_table_countries_today").DataTable({
             scrollCollapse: true,
